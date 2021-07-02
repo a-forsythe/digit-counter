@@ -1,4 +1,6 @@
 import os
+import sys
+import pytest
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -26,5 +28,8 @@ def root():
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(24)
-    debug = os.getenv("ENV") == "development"
-    app.run(host="0.0.0.0", port=5000, debug=debug)
+    if os.getenv("ENV") == "test":
+        sys.exit(pytest.main())
+    else:
+        debug = os.getenv("ENV") == "development"
+        app.run(host="0.0.0.0", port=5000, debug=debug)
