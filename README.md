@@ -38,4 +38,4 @@ To run unit tests:
 
 To run unit tests:
 
-- `docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build`
+- `docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit`
