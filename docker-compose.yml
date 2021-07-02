@@ -1,9 +1,12 @@
 version: "3.8"
 services:
   digit-counter-api:
-    build: .
+    build:
+      context: .
+      args:
+        FAKE_SECRET: password123
     environment:
-      ENV: "production"
+      ENV: production
     ports:
       - "5000:5000"
     volumes:

@@ -5,7 +5,7 @@ COPY src/requirements.txt .
 RUN pip install -r requirements.txt
 COPY src/ .
 
-ENV FAKE_SECRET password123
+ARG FAKE_SECRET
 RUN python require_secret.py
 
 EXPOSE 5000
