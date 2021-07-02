@@ -2,6 +2,10 @@
 
 This state-of-the-art web API will count the number of numeric digits `[0-9]` in whatever string you pass to it.
 
+## Usage
+
+- `GET /?s=hello12345` -> `{"count":5,"message":"I reckon I see 5 digits."}`
+
 ## Running the app
 
 ### Local testing
