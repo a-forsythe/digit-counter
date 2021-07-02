@@ -20,3 +20,8 @@ This state-of-the-art web API will count the number of numeric digits `[0-9]` in
 To run unit tests:
 
 - `pytest tests`
+
+### Docker
+
+- `docker build -t digit-counter .`
+- `docker run -p 5000:5000 digit=-counter`
