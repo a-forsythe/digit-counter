@@ -25,3 +25,7 @@ To run unit tests:
 
 - `docker build -t digit-counter .`
 - `docker run -p 5000:5000 digit=-counter`
+
+To run unit tests:
+
+- `docker run -e ENV=test digit-counter`
