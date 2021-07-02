@@ -25,7 +25,17 @@ To run unit tests:
 
 - `docker build -t digit-counter .`
 - `docker run -p 5000:5000 digit=-counter`
+- API will be running at http://127.0.0.1:5000
 
 To run unit tests:
 
 - `docker run -e ENV=test digit-counter`
+
+### Docker Compose
+
+- `docker-compose up --build`
+- API will be running at http://127.0.0.1:5000
+
+To run unit tests:
+
+- `docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build`
