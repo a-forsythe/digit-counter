@@ -12,5 +12,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Build
+        run: docker-compose -f docker-compose.yml -f docker-compose.test.yml build
+
       - name: Test
-        run: docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit
+        run: docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit
