@@ -16,3 +16,7 @@ This state-of-the-art web API will count the number of numeric digits `[0-9]` in
 - `pip install -r requirements.txt`
 - `flask run`
 - API will be running at http://127.0.0.1:5000
+
+To run unit tests:
+
+- `pytest tests`
