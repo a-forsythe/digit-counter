@@ -30,4 +30,4 @@ def test_many_digits(client):
     r = client.get(f"/?s={s}")
     assert r.status_code == 200
     assert r.json["count"] == 3004
-    assert "Tarnation!" in r.json["message"]
+    assert any(x in r.json["message"] for x in ("Tarnation!", "Consarnit!"))
