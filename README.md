@@ -23,8 +23,9 @@ To run unit tests:
 
 ### Docker
 
-- `docker build -t digit-counter .`
-- `docker run -p 5000:5000 digit=-counter`
+- `echo password123 > secret.txt`
+- `docker build --secret id=fake,src=secret.txt -t digit-counter .`
+- `docker run -p 5000:5000 digit-counter`
 - API will be running at http://127.0.0.1:5000
 
 To run unit tests:
