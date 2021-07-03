@@ -2,6 +2,8 @@ version: "3.8"
 services:
   digit-counter-api:
     environment:
-      ENV: "test"
+      ENV: test
+      TEST_ARTIFACTS_PATH: /test-artifacts
     ports: []
-    volumes: []
+    volumes:
+      - ./test-artifacts:/test-artifacts

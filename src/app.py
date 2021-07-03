@@ -31,7 +31,9 @@ def root():
 if __name__ == "__main__":
     app.secret_key = os.urandom(24)
     if os.getenv("ENV") == "test":
-        sys.exit(pytest.main())
+        test_artifacts_path = os.getenv("TEST_ARTIFACTS_PATH")
+        pytest_args = [f"--junitxml={test_artifacts_path}/test-results.xml"] if test_artifacts_path else []
+        sys.exit(pytest.main(pytest_args))
     else:
         debug = os.getenv("ENV") == "development"
         app.run(host="0.0.0.0", port=5000, debug=debug)
