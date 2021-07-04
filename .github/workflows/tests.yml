@@ -6,6 +6,7 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    container: buster-slim
     name: Run Tests
 
     services:
