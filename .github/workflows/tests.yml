@@ -54,6 +54,7 @@ jobs:
 
       - name: Test
         run: >-
+          docker run
             -e ENV=test
             -e TEST_ARTIFACTS_PATH=/test-artifacts
             -e REDIS_URL=redis://redis:6379/0
