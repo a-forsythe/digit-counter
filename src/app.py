@@ -4,6 +4,8 @@ import pytest
 import subprocess
 from flask import Flask, request
 
+os.environ.setdefault("REDIS_URL", "redis://localhost:6379/0")
+
 app = Flask(__name__)
 
 

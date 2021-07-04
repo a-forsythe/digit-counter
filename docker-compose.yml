@@ -1,5 +1,9 @@
 version: "3.8"
 services:
+
+  digit-counter-redis:
+    image: redis:6.2-alpine
+
   digit-counter-api:
     build:
       context: .
@@ -7,5 +11,6 @@ services:
         FAKE_SECRET: ${FAKE_SECRET}
     environment:
       ENV: production
+      REDIS_URL: redis://digit-counter-redis:6379/0
     ports:
       - "5000:5000"

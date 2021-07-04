@@ -29,7 +29,7 @@ To run unit tests:
 
 To run unit tests:
 
-- `docker run -e ENV=test a-forsythe/digit-counter`
+- `docker run -e ENV=test -e REDIS_URL=<redis-url> a-forsythe/digit-counter`
 
 ### Docker Compose
 
