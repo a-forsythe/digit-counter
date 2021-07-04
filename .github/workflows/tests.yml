@@ -53,11 +53,11 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Test
-        run: |
-            -e ENV=test \
-            -e TEST_ARTIFACTS_PATH=/test-artifacts \
+        run: >-
+            -e ENV=test
+            -e TEST_ARTIFACTS_PATH=/test-artifacts
             -e REDIS_URL=redis://redis:6379/0
-            -v "$(pwd)/test-artifacts:/test-artifacts" \
+            -v "$(pwd)/test-artifacts:/test-artifacts"
             a-forsythe/digit-counter
 
       - name: Publish Test Results
