@@ -35,7 +35,7 @@ def cowsay():
     if s is None:
         return {"error": "Missing URL parameter 's'"}, 400
 
-    cowsay_args = ["cowsay", s]
+    cowsay_args = ["cowsay", "-e", "xx", s]
     cowsay_kwargs = {"stdout": subprocess.PIPE, "stderr": subprocess.STDOUT}
     process = subprocess.Popen(cowsay_args, **cowsay_kwargs)
     output, _ = process.communicate()
