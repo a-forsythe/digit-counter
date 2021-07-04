@@ -18,11 +18,20 @@ jobs:
       - name: Build
         env:
           FAKE_SECRET: ${{ secrets.FAKE_SECRET }}
-          DOCKER_BUILDKIT: "1"
-        run: docker-compose -f docker-compose.yml -f docker-compose.test.yml build
+        uses: docker/build-and-push-action@v2
+        with:
+          context: .
+          tags: a-forsythe/digit-counter-app:latest
+          secrets: |
+            "fake=${{ secrets.FAKE_SECRET }}"
 
       - name: Test
-        run: docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit
+        run: |
+          docker run \
+            -e ENV=test \
+            -e TEST_ARTIFACTS_PATH=/test-artifacts \
+            -v "$(pwd)/test-artifacts:/test-artifacts" \
+            a-forsythe/digit-counter
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
