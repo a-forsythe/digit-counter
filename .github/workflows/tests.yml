@@ -20,6 +20,7 @@ jobs:
       - name: Build
         env:
           FAKE_SECRET: ${{ secrets.FAKE_SECRET }}
+          DOCKER_BUILDKIT: "1"
         run: docker-compose -f docker-compose.yml -f docker-compose.test.yml build
 
       - name: Test
