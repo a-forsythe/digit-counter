@@ -1,6 +1,7 @@
 import os
 import sys
 import pytest
+import subprocess
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -26,6 +27,19 @@ def root():
         return {"error": "Missing URL parameter 's'"}, 400
     count = sum(c.isdigit() for c in s)
     return {"count": count, "message": get_message(count)}
+
+
+@app.route("/cowsay")
+def cowsay():
+    s = request.args.get("s")
+    if s is None:
+        return {"error": "Missing URL parameter 's'"}, 400
+
+    cowsay_args = ["cowsay", s]
+    cowsay_kwargs = {"stdout": subprocess.PIPE, "stderr": subprocess.STDOUT}
+    process = subprocess.Popen(cowsay_args, **cowsay_kwargs)
+    output, _ = process.communicate()
+    return output
 
 
 if __name__ == "__main__":
