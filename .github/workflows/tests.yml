@@ -59,7 +59,7 @@ jobs:
           docker run \
             -e ENV=test \
             -e TEST_ARTIFACTS_PATH=/test-artifacts \
-            -e REDIS_URL=redis://redis:6379/0 \
+            -e REDIS_URL=redis://localhost:6379/0 \
             -v "$(pwd)/test-artifacts:/test-artifacts" \
             a-forsythe/digit-counter
 
