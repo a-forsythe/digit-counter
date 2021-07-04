@@ -21,7 +21,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          tags: a-forsythe/digit-counter-app:latest
+          tags: a-forsythe/digit-counter:latest
           secrets: |
             "fake=${{ secrets.FAKE_SECRET }}"
 
