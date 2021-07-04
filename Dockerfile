@@ -1,6 +1,6 @@
 FROM python:3.9.6-slim
 
-RUN apt-get update && apt-get install -y cowsay man
+RUN apt-get update && apt-get install -y cowsay
 ENV PATH "/usr/games:${PATH}"
 
 WORKDIR /app
