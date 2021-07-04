@@ -22,6 +22,7 @@ jobs:
         with:
           context: .
           tags: a-forsythe/digit-counter:latest
+          load: true
           secrets: |
             "fake=${{ secrets.FAKE_SECRET }}"
 
