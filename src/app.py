@@ -37,8 +37,8 @@ def cowsay():
 
     cowsay_args = ["cowsay", s]
     cowsay_kwargs = {"stdout": subprocess.PIPE, "stderr": subprocess.STDOUT}
-    p = subprocess.Popen(cowsay_args, **cowsay_kwargs)
-    output, _ = p.communicate()
+    process = subprocess.Popen(cowsay_args, **cowsay_kwargs)
+    output, _ = process.communicate()
     return output
 
 
