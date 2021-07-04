@@ -43,11 +43,8 @@ jobs:
 
       - name: Test
         run: |
-          docker run \
-            -e ENV=test \
-            -e TEST_ARTIFACTS_PATH=/test-artifacts \
-            -v "$(pwd)/test-artifacts:/test-artifacts" \
-            a-forsythe/digit-counter
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml pull
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
