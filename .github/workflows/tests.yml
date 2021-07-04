@@ -12,11 +12,45 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
       - name: Build
         env:
           FAKE_SECRET: ${{ secrets.FAKE_SECRET }}
-          DOCKER_BUILDKIT: "1"
-        run: docker-compose -f docker-compose.yml -f docker-compose.test.yml build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          tags: a-forsythe/digit-counter:latest
+          load: true
+          secrets: |
+            "fake=${{ secrets.FAKE_SECRET }}"
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      - name: Swap Cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Test
-        run: docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit
+        run: |
+          docker run \
+            -e ENV=test \
+            -e TEST_ARTIFACTS_PATH=/test-artifacts \
+            -v "$(pwd)/test-artifacts:/test-artifacts" \
+            a-forsythe/digit-counter
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: test-artifacts/test-results.xml

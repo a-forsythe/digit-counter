@@ -23,19 +23,22 @@ To run unit tests:
 
 ### Docker
 
-- `echo password123 > secret.txt`
-- `docker build --secret id=fake,src=secret.txt -t digit-counter .`
-- `docker run -p 5000:5000 digit-counter`
+- `FAKE_SECRET=password123 docker build --secret id=fake,env=FAKE_SECRET -t a-forsythe/digit-counter:latest .`
+- `docker run -p 5000:5000 a-forsythe/digit-counter`
 - API will be running at http://127.0.0.1:5000
 
 To run unit tests:
 
-- `docker run -e ENV=test digit-counter`
+- `docker run -e ENV=test a-forsythe/digit-counter`
 
 ### Docker Compose
 
-- `docker-compose up --build`
+- `FAKE_SECRET=password123 docker-compose up --build`
 - API will be running at http://127.0.0.1:5000
+
+To run in development configuration with auto-reload on source changes:
+
+- `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build`
 
 To run unit tests:
 

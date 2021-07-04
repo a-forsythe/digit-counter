@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  digit-counter-api:
+    environment:
+      ENV: development
+    volumes:
+      - ./src:/app

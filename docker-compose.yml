@@ -4,10 +4,8 @@ services:
     build:
       context: .
       args:
-        FAKE_SECRET: password123
+        FAKE_SECRET: ${FAKE_SECRET}
     environment:
       ENV: production
     ports:
       - "5000:5000"
-    volumes:
-      - ./src:/app
