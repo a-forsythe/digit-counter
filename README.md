@@ -34,8 +34,12 @@ To run unit tests:
 
 ### Docker Compose
 
-- `docker-compose up --build`
+- `FAKE_SECRET=password123 docker-compose up --build`
 - API will be running at http://127.0.0.1:5000
+
+To run in development configuration with auto-reload on source changes:
+
+- `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build`
 
 To run unit tests:
 
