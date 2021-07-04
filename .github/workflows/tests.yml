@@ -7,6 +7,17 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
     name: Run Tests
+
+    services:
+
+      redis:
+        image: redis:6.2-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 25
+
     steps:
 
       - name: Checkout
@@ -43,8 +54,11 @@ jobs:
 
       - name: Test
         run: |
-          docker-compose -f docker-compose.yml -f docker-compose.test.yml pull
-          docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit
+            -e ENV=test \
+            -e TEST_ARTIFACTS_PATH=/test-artifacts \
+            -e REDIS_URL=redis://redis:6379/0
+            -v "$(pwd)/test-artifacts:/test-artifacts" \
+            a-forsythe/digit-counter
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
