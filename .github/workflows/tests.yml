@@ -28,7 +28,7 @@ jobs:
       - name: Build
         env:
           IMAGE_TAG: sha-${{ github.sha }}
-        run:
+        run: |
           export DOCKER_BUILDKIT=1
           echo "version='$IMAGE_TAG'" > src/__version__.py
           docker build \
