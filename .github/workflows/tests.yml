@@ -31,9 +31,9 @@ jobs:
       - name: Build
         env:
           IMAGE_TAG: sha-${{ github.sha }}
-          BRANCH_TAG: sha-${GITHUB_REF_SLUG}-${GITHUB_SHA_SHORT}
         run: |
           export DOCKER_BUILDKIT=1
+          export BRANCH_TAG="sha-${GITHUB_REF_SLUG}-${GITHUB_SHA_SHORT}"
           echo "version='$IMAGE_TAG'" > src/__version__.py
           docker build \
             --build-arg FAKE_SECRET=${{ secrets.FAKE_SECRET }} \
