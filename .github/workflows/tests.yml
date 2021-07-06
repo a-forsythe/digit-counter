@@ -33,16 +33,34 @@ jobs:
           echo "IMAGE_TAG=sha-${{ github.sha }}" >> $GITHUB_ENV
           echo "BRANCH_TAG=sha-${GITHUB_REF_SLUG}-${GITHUB_SHA_SHORT}" >> $GITHUB_ENV
 
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
       - name: Build
         run: |
           export DOCKER_BUILDKIT=1
           export BRANCH_TAG="sha-${GITHUB_REF_SLUG}-${GITHUB_SHA_SHORT}"
           echo "version='${{ env.IMAGE_TAG }}'" > src/__version__.py
           docker build \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,src=/tmp/.buildx-cache-new \
             --build-arg FAKE_SECRET=${{ secrets.FAKE_SECRET }} \
             --tag test/digit-counter:${{ env.IMAGE_TAG }} \
             --tag test/digit-counter:${{ env.BRANCH_TAG }} \
             .
+
+      - name: Swap Cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Test
         run: |
