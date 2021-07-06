@@ -53,13 +53,11 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Test
-        env:
-          REDIS_HOST: $(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
         run: |
           docker run \
             -e ENV=test \
             -e TEST_ARTIFACTS_PATH=/test-artifacts \
-            -e REDIS_URL=redis://${REDIS_HOST}:6379/0 \
+            -e REDIS_URL=redis://$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}'):6379/0 \
             -v "$(pwd)/test-artifacts:/test-artifacts" \
             a-forsythe/digit-counter
 
