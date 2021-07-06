@@ -45,6 +45,8 @@ jobs:
           build-args: CACHE_DATE=$(date +%Y-%m-%d:%H:%M:%S)
           tags: a-forsythe/digit-counter:latest
           load: true
+          secrets: |
+            "fake=${{ secrets.FAKE_SECRET }}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
