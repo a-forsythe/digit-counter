@@ -42,8 +42,6 @@ jobs:
           context: .
           tags: a-forsythe/digit-counter:latest
           load: true
-          secrets: |
-            "fake=${{ secrets.FAKE_SECRET }}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
