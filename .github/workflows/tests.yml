@@ -43,7 +43,7 @@ jobs:
         with:
           context: .
           build-args:
-            - CACHE_DATE: $(date +%Y-%m-%d:%H:%M:%S)
+            CACHE_DATE: $(date +%Y-%m-%d:%H:%M:%S)
           tags: a-forsythe/digit-counter:latest
           load: true
           cache-from: type=local,src=/tmp/.buildx-cache
