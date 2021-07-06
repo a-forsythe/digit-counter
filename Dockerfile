@@ -9,6 +9,7 @@ RUN pip install -r requirements.txt
 COPY src/ .
 
 ARG FAKE_SECRET
+ARG CACHE_DATE
 RUN --mount=type=secret,id=fake FAKE_SECRET="${FAKE_SECRET:-$(cat /run/secrets/fake)}" \
 	python require_secret.py
 
