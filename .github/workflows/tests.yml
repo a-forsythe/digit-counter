@@ -28,6 +28,11 @@ jobs:
       - name: Inject slugs
         uses: rlespinasse/github-slug-action@v3.x
 
+      - name: Define tags
+        run: |
+          echo "image_tag=sha-${{ github.sha }}" >> $GITHUB_ENV
+          echo "branch_tag=sha-${GITHUB_REF_SLUG}-${GITHUB_SHA_SHORT}" >> $GITHUB_ENV
+
       - name: Build
         env:
           IMAGE_TAG: sha-${{ github.sha }}
@@ -63,4 +68,6 @@ jobs:
           echo "BRANCH_TAG = ${BRANCH_TAG}"
           echo "GITHUB_REF_SLUG = ${GITHUB_REF_SLUG}"
           echo "GITHUB_SHA_SHORT = ${GITHUB_SHA_SHORT}"
+          echo "env.image_tag = ${{ env.image_tag }}"
+          echo "env.branch_tag = ${{ env.branch_tag }}"
           echo "Goodbye"
