@@ -30,20 +30,18 @@ jobs:
 
       - name: Define tags
         run: |
-          echo "image_tag=sha-${{ github.sha }}" >> $GITHUB_ENV
-          echo "branch_tag=sha-${GITHUB_REF_SLUG}-${GITHUB_SHA_SHORT}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=sha-${{ github.sha }}" >> $GITHUB_ENV
+          echo "BRANCH_TAG=sha-${GITHUB_REF_SLUG}-${GITHUB_SHA_SHORT}" >> $GITHUB_ENV
 
       - name: Build
-        env:
-          IMAGE_TAG: sha-${{ github.sha }}
         run: |
           export DOCKER_BUILDKIT=1
           export BRANCH_TAG="sha-${GITHUB_REF_SLUG}-${GITHUB_SHA_SHORT}"
-          echo "version='$IMAGE_TAG'" > src/__version__.py
+          echo "version='${{ env.IMAGE_TAG }}'" > src/__version__.py
           docker build \
             --build-arg FAKE_SECRET=${{ secrets.FAKE_SECRET }} \
-            --tag test/digit-counter:$IMAGE_TAG \
-            --tag test/digit-counter:$BRANCH_TAG \
+            --tag test/digit-counter:${{ env.IMAGE_TAG }} \
+            --tag test/digit-counter:${{ env.BRANCH_TAG }} \
             .
 
       - name: Test
@@ -53,21 +51,10 @@ jobs:
             -e TEST_ARTIFACTS_PATH=/test-artifacts \
             -e REDIS_URL=redis://$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}'):6379/0 \
             -v "$(pwd)/test-artifacts:/test-artifacts" \
-            test/digit-counter:sha-${{ github.sha }}
+            test/digit-counter:${{ env.IMAGE_TAG }}
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
           files: test-artifacts/test-results.xml
-
-      - name: Echo
-        run: |
-          echo "Hello"
-          echo "IMAGE_TAG = ${IMAGE_TAG}"
-          echo "BRANCH_TAG = ${BRANCH_TAG}"
-          echo "GITHUB_REF_SLUG = ${GITHUB_REF_SLUG}"
-          echo "GITHUB_SHA_SHORT = ${GITHUB_SHA_SHORT}"
-          echo "env.image_tag = ${{ env.image_tag }}"
-          echo "env.branch_tag = ${{ env.branch_tag }}"
-          echo "Goodbye"
