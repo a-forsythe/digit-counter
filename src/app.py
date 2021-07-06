@@ -5,6 +5,8 @@ import subprocess
 import redis
 from flask import Flask, request
 
+from __version__ import version
+
 os.environ.setdefault("REDIS_URL", "redis://localhost:6379/0")
 redis_connection = redis.from_url(os.getenv("REDIS_URL"))
 
@@ -50,7 +52,7 @@ def cowsay():
 @app.route("/stats")
 def stats():
     num_counts_computed = int(redis_connection.get("num-counts-computed") or "0")
-    return {"num": num_counts_computed}
+    return {"num": num_counts_computed, "version": version}
 
 
 if __name__ == "__main__":
