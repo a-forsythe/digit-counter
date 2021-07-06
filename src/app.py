@@ -2,9 +2,11 @@ import os
 import sys
 import pytest
 import subprocess
+import redis
 from flask import Flask, request
 
 os.environ.setdefault("REDIS_URL", "redis://localhost:6379/0")
+redis_connection = redis.from_url(os.getenv("REDIS_URL"))
 
 app = Flask(__name__)
 
@@ -28,6 +30,7 @@ def root():
     if s is None:
         return {"error": "Missing URL parameter 's'"}, 400
     count = sum(c.isdigit() for c in s)
+    redis_connection.incr("num-counts-computed")
     return {"count": count, "message": get_message(count)}
 
 
@@ -42,6 +45,12 @@ def cowsay():
     process = subprocess.Popen(cowsay_args, **cowsay_kwargs)
     output, _ = process.communicate()
     return output
+
+
+@app.route("/stats")
+def stats():
+    num_counts_computed = int(redis_connection.get("num-counts-computed") or "0")
+    return {"num": num_counts_computed}
 
 
 if __name__ == "__main__":
