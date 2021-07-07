@@ -62,7 +62,7 @@ jobs:
         ports:
           - "6379:6379"
     container:
-      image: ${GHCR_REPOSITORY}:${{ needs.build.outputs.github-tag }}
+      image: ghcr.io/a-forsythe/digit-counter:${{ needs.build.outputs.github-tag }}
       env:
         ENV: test
         TEST_ARTIFACTS_PATH: /test-artifacts
