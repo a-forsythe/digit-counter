@@ -51,7 +51,7 @@ jobs:
           echo "version='${{ env.IMAGE_TAG }}'" > src/__version__.py
           docker buildx build \
             --cache-from type=local,src=/tmp/.buildx-cache \
-            --cache-to type=local,src=/tmp/.buildx-cache-new \
+            --cache-to type=local,dest=/tmp/.buildx-cache-new \
             --build-arg FAKE_SECRET=${{ secrets.FAKE_SECRET }} \
             --tag test/digit-counter:${{ env.IMAGE_TAG }} \
             --tag test/digit-counter:${{ env.BRANCH_TAG }} \
