@@ -71,3 +71,6 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Test
+        run: echo "test"
