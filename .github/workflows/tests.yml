@@ -49,7 +49,7 @@ jobs:
           export DOCKER_BUILDKIT=1
           export BRANCH_TAG="sha-${GITHUB_REF_SLUG}-${GITHUB_SHA_SHORT}"
           echo "version='${{ env.IMAGE_TAG }}'" > src/__version__.py
-          docker build \
+          docker buildx build \
             --cache-from type=local,src=/tmp/.buildx-cache \
             --cache-to type=local,src=/tmp/.buildx-cache-new \
             --build-arg FAKE_SECRET=${{ secrets.FAKE_SECRET }} \
