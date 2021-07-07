@@ -61,9 +61,7 @@ jobs:
       image: ghcr.io/a-forsythe/digit-counter:${{ needs.build.outputs.github-tag }}
       env:
         ENV: test
-        TEST_ARTIFACTS_PATH: /test-artifacts
         REDIS_URL: redis://redis:6379/0
-      options: -v $(pwd)/test-artifacts:/test-artifacts
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
