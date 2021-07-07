@@ -67,5 +67,5 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Test
-        working-dir: /app
+        working-directory: /app
         run: python -m pytest tests
