@@ -37,10 +37,11 @@ jobs:
 
       - name: Build and Push to GHCR
         env:
-          GITHUB_TAG: ${GHCR_REPOSITORY}:${{ steps.define-tags.outputs.github-tag }}
           fake: ${{ secrets.FAKE_SECRET }}
         run: |
           export DOCKER_BUILDKIT=1
+          export GITHUB_TAG=${GHCR_REPOSITORY}:${{ steps.define-tags.outputs.github-tag }}
+          echo "GHCR_REPOSITORY is ${GHCR_REPOSITORY}"
           echo "version='${{ steps.define-tags.outputs.image-tag }}'" > src/__version__.py
           docker build --secret id=fake --tag $GITHUB_TAG .
           docker push $GITHUB_TAG
