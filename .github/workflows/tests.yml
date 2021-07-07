@@ -3,9 +3,6 @@ name: Test Digit Counter
 on:
   - push
 
-env:
-  GHCR_REPOSITORY: ghcr.io/a-forsythe/digit-counter
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -40,8 +37,7 @@ jobs:
           fake: ${{ secrets.FAKE_SECRET }}
         run: |
           export DOCKER_BUILDKIT=1
-          export GITHUB_TAG=${GHCR_REPOSITORY}:${{ steps.define-tags.outputs.github-tag }}
-          echo "GHCR_REPOSITORY is ${GHCR_REPOSITORY}"
+          export GITHUB_TAG=ghcr.io/a-forsythe/digit-counter:${{ steps.define-tags.outputs.github-tag }}
           echo "version='${{ steps.define-tags.outputs.image-tag }}'" > src/__version__.py
           docker build --secret id=fake --tag $GITHUB_TAG .
           docker push $GITHUB_TAG
@@ -68,7 +64,7 @@ jobs:
         TEST_ARTIFACTS_PATH: /test-artifacts
         REDIS_URL: redis://redis:6379/0
       volumes:
-        - ./test-artifacts:/test-artifacts
+        - $(pwd)/test-artifacts:/test-artifacts
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
