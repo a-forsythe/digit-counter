@@ -55,6 +55,7 @@ jobs:
             --build-arg FAKE_SECRET=${{ secrets.FAKE_SECRET }} \
             --tag test/digit-counter:${{ env.IMAGE_TAG }} \
             --tag test/digit-counter:${{ env.BRANCH_TAG }} \
+            --load \
             .
 
       - name: Swap Cache
