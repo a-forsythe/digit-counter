@@ -45,29 +45,29 @@ jobs:
           docker build --secret id=fake --tag $GITHUB_TAG .
           docker push $GITHUB_TAG
 
-    test:
-      runs-on: ubuntu-latest
-      name: Test
-      needs:
-        - build
-      services:
-        redis:
-          image: redis:6.2-alpine
-          options: >-
-            --health-cmd "redis-cli ping"
-            --health-interval 2s
-            --health-timeout 5s
-            --health-retries 25
-          ports:
-            - "6379:6379"
-        container:
-          image: ${GHCR_REPOSITORY}:${{ needs.build.outputs.github-tag }}
-          env:
-            ENV: test
-            TEST_ARTIFACTS_PATH: /test-artifacts
-            REDIS_URL: redis://redis:6379/0
-          volumes:
-            - ./test-artifacts:/test-artifacts
-          credentials:
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
+  test:
+    runs-on: ubuntu-latest
+    name: Test
+    needs:
+      - build
+    services:
+      redis:
+        image: redis:6.2-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 25
+        ports:
+          - "6379:6379"
+      container:
+        image: ${GHCR_REPOSITORY}:${{ needs.build.outputs.github-tag }}
+        env:
+          ENV: test
+          TEST_ARTIFACTS_PATH: /test-artifacts
+          REDIS_URL: redis://redis:6379/0
+        volumes:
+          - ./test-artifacts:/test-artifacts
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
