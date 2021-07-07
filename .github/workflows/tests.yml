@@ -60,14 +60,14 @@ jobs:
           --health-retries 25
         ports:
           - "6379:6379"
-      container:
-        image: ${GHCR_REPOSITORY}:${{ needs.build.outputs.github-tag }}
-        env:
-          ENV: test
-          TEST_ARTIFACTS_PATH: /test-artifacts
-          REDIS_URL: redis://redis:6379/0
-        volumes:
-          - ./test-artifacts:/test-artifacts
-        credentials:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+    container:
+      image: ${GHCR_REPOSITORY}:${{ needs.build.outputs.github-tag }}
+      env:
+        ENV: test
+        TEST_ARTIFACTS_PATH: /test-artifacts
+        REDIS_URL: redis://redis:6379/0
+      volumes:
+        - ./test-artifacts:/test-artifacts
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
