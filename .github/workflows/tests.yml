@@ -3,25 +3,18 @@ name: Test Digit Counter
 on:
   - push
 
+env:
+  GHCR_REPOSITORY: ghcr.io/a-forsythe/digit-counter
+
 jobs:
-  run-tests:
+  build:
     runs-on: ubuntu-latest
-    name: Run Tests
-
-    services:
-
-      redis:
-        image: redis:6.2-alpine
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 2s
-          --health-timeout 5s
-          --health-retries 25
-        ports:
-          - "6379:6379"
-
+    name: Build
+    outputs:
+      github-tag: ${{ steps.define-tags.outputs.github-tag }}
+      image-tag: ${{ steps.define-tags.outputs.image-tag }}
+      branch-tag: ${{ steps.define-tags.outputs.branch-tag }}
     steps:
-
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -29,50 +22,52 @@ jobs:
         uses: rlespinasse/github-slug-action@v3.x
 
       - name: Define tags
+        id: define-tags
         run: |
-          echo "IMAGE_TAG=sha-${{ github.sha }}" >> $GITHUB_ENV
-          echo "BRANCH_TAG=sha-${GITHUB_REF_SLUG}-${GITHUB_SHA_SHORT}" >> $GITHUB_ENV
+          echo "::set-output name=github-tag::${GITHUB_SHA_SHORT}"
+          echo "::set-output name=image-tag::sha-${{ github.sha }}"
+          echo "::set-output name=branch-tag::sha-${GITHUB_REF_SLUG}-${GITHUB_SHA_SHORT}"
 
-      - name: Setup Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Cache
-        uses: actions/cache@v2
+      - name: Log in to GHCR
+        uses: docker/login-action@v1
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build
+      - name: Build and Push to GHCR
+        env:
+          GITHUB_TAG: ${GHCR_REPOSITORY}:${{ steps.define-tags.outputs.github-tag }}
+          fake: ${{ secrets.FAKE_SECRET }}
         run: |
-          export BRANCH_TAG="sha-${GITHUB_REF_SLUG}-${GITHUB_SHA_SHORT}"
-          echo "version='${{ env.IMAGE_TAG }}'" > src/__version__.py
-          docker buildx build \
-            --cache-from type=local,src=/tmp/.buildx-cache \
-            --cache-to type=local,dest=/tmp/.buildx-cache-new \
-            --build-arg FAKE_SECRET=${{ secrets.FAKE_SECRET }} \
-            --tag test/digit-counter:${{ env.IMAGE_TAG }} \
-            --tag test/digit-counter:${{ env.BRANCH_TAG }} \
-            --load \
-            .
+          export DOCKER_BUILDKIT=1
+          echo "version='${{ steps.define-tags.outputs.image-tag }}'" > src/__version__.py
+          docker build --secret id=fake --tag $GITHUB_TAG .
+          docker push $GITHUB_TAG
 
-      - name: Swap Cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-      - name: Test
-        run: |
-          docker run \
-            -e ENV=test \
-            -e TEST_ARTIFACTS_PATH=/test-artifacts \
-            -e REDIS_URL=redis://$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}'):6379/0 \
-            -v "$(pwd)/test-artifacts:/test-artifacts" \
-            test/digit-counter:${{ env.IMAGE_TAG }}
-
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-          files: test-artifacts/test-results.xml
+    test:
+      runs-on: ubuntu-latest
+      name: Test
+      needs:
+        - build
+      services:
+        redis:
+          image: redis:6.2-alpine
+          options: >-
+            --health-cmd "redis-cli ping"
+            --health-interval 2s
+            --health-timeout 5s
+            --health-retries 25
+          ports:
+            - "6379:6379"
+        container:
+          image: ${GHCR_REPOSITORY}:${{ needs.build.outputs.github-tag }}
+          env:
+            ENV: test
+            TEST_ARTIFACTS_PATH: /test-artifacts
+            REDIS_URL: redis://redis:6379/0
+          volumes:
+            - ./test-artifacts:/test-artifacts
+          credentials:
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
