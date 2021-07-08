@@ -62,6 +62,8 @@ jobs:
       env:
         ENV: test
         REDIS_URL: redis://redis:6379/0
+      volumes:
+        - /test-artifacts:/test-artifacts
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
