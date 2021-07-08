@@ -69,7 +69,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Test
-        working-directory: /app
+        working-directory: /usr/app
         run: python -m pytest tests --junit-xml=/usr/test-artifacts/test-results.xml
 
       - name: Upload Results
