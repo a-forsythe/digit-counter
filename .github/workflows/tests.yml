@@ -63,14 +63,14 @@ jobs:
         ENV: test
         REDIS_URL: redis://redis:6379/0
       volumes:
-        - /test-artifacts:/test-artifacts
+        - /test-artifacts:/usr/test-artifacts
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Test
         working-directory: /app
-        run: python -m pytest tests --junit-xml=/test-artifacts/test-results.xml
+        run: python -m pytest tests --junit-xml=/usr/test-artifacts/test-results.xml
 
       - name: Upload Results
         if: always()

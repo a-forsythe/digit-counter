@@ -4,7 +4,7 @@ services:
   digit-counter-api:
     environment:
       ENV: test
-      TEST_ARTIFACTS_PATH: /test-artifacts
+      TEST_ARTIFACTS_PATH: /usr/test-artifacts
     ports: []
     volumes:
-      - ./test-artifacts:/test-artifacts
+      - ./test-artifacts:/usr/test-artifacts
