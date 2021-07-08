@@ -68,4 +68,10 @@ jobs:
     steps:
       - name: Test
         working-directory: /app
-        run: python -m pytest tests
+        run: python -m pytest tests --junit-xml=/test-artifacts/test-results.xml
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: /test-artifacts/test-results.xml
