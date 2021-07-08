@@ -62,8 +62,6 @@ jobs:
       env:
         ENV: test
         REDIS_URL: redis://redis:6379/0
-      volumes:
-        - /test-artifacts:/usr/test-artifacts
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -77,7 +75,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: pytest-results
-          path: /test-artifacts/test-results.xml
+          path: /usr/test-artifacts/test-results.xml
 
   publish-test-results:
     runs-on: ubuntu-latest
