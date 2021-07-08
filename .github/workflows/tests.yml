@@ -72,9 +72,28 @@ jobs:
         working-directory: /app
         run: python -m pytest tests --junit-xml=/test-artifacts/test-results.xml
 
-      - name: Upload Test Results
+      - name: Upload Results
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: pytest Results
+          name: pytest-results
           path: /test-artifacts/test-results.xml
+
+  publish-test-results:
+    runs-on: ubuntu-latest
+    name: Publish Test Results
+    needs:
+      - test
+    if: success() || failure()
+    steps:
+      - name: Download Results
+        uses: actions/download-artifact@v2
+        with:
+          name: pytest-results
+          path: ~/test-results.xml
+
+      
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        with:
+          files: ~/test-results.xml
