@@ -37,10 +37,10 @@ jobs:
           fake: ${{ secrets.FAKE_SECRET }}
         run: |
           export DOCKER_BUILDKIT=1
-          export GITHUB_TAG=ghcr.io/a-forsythe/digit-counter:${{ steps.define-tags.outputs.github-tag }}
+          export GITHUB_IMAGE=ghcr.io/a-forsythe/digit-counter:${{ steps.define-tags.outputs.github-tag }}
           echo "version='${{ steps.define-tags.outputs.image-tag }}'" > src/__version__.py
-          docker build --secret id=fake --tag $GITHUB_TAG .
-          docker push $GITHUB_TAG
+          docker build --secret id=fake --tag $GITHUB_IMAGE .
+          docker push $GITHUB_IMAGE
 
   test:
     runs-on: ubuntu-latest
@@ -94,3 +94,24 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v1
         with:
           files: test-results.xml
+
+  promote-image:
+    runs-on: ubuntu-latest
+    name: Promote Image
+    needs:
+      - build
+      - test
+    steps:
+      - name: Log in to GHCR
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull and tag
+        run: |
+          export GITHUB_IMAGE=ghcr.io/a-forsythe/digit-counter:${{ needs.build.outputs.github-tag }}
+          docker pull $GITHUB_IMAGE
+          docker tag $GITHUB_IMAGE test/digit-counter:${{ needs.build.outputs.image-tag }}
+          docker tag $GITHUB_IMAGE test/digit-counter:${{ needs.build.outputs.branch-tag }}
