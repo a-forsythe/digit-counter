@@ -110,8 +110,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull and tag
+        env:
+          SOME_REGISTRY: someregistry.test
+          SOME_REPOSITORY: digit-counter
         run: |
           export GITHUB_IMAGE=ghcr.io/a-forsythe/digit-counter:${{ needs.build.outputs.github-tag }}
-          docker pull $GITHUB_IMAGE
-          docker tag $GITHUB_IMAGE test/digit-counter:${{ needs.build.outputs.image-tag }}
-          docker tag $GITHUB_IMAGE test/digit-counter:${{ needs.build.outputs.branch-tag }}
+          export SOME_IMAGE_COMMIT_TAGGED=${SOME_REGISTRY}/${SOME_REPOSITORY}:${{ needs.build.outputs.image-tag }}
+          export SOME_IMAGE_BRANCH_TAGGED=${SOME_REGISTRY}/${SOME_REPOSITORY}:${{ needs.build.outputs.branch-tag }}
+          echo "GITHUB_IMAGE=${GITHUB_IMAGE}"
+          echo "SOME_IMAGE_COMMIT_TAGGED=${SOME_IMAGE_COMMIT_TAGGED}"
+          echo "SOME_IMAGE_BRANCH_TAGGED=${SOME_IMAGE_BRANCH_TAGGED}"
