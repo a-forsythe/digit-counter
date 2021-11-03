@@ -1,8 +1,8 @@
 # This is markdown
 
-This is a [paragraph](paragraph).
+This is a [paragraph][paragraph].
 
-This is another paragraph. [Strawberry](strawb).
+This is another paragraph. [Strawberry][strawb].
 
 Well, thanks for that.
 
